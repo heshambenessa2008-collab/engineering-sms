@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة الطالب - المقررات الدراسية</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --header-blue: #0081ff;
+            --bg-light: #f4f6f9;
+            --text-dark: #333;
+            --success: #28a745;
+            --danger: #dc3545;
+            --border: #ced4da;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); }
+        
+        .app-header {
+            background-color: var(--header-blue);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .content-body { padding: 15px; max-width: 800px; margin: 20px auto; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; font-size: 0.9rem; }
+        th, td { border: 1px solid #dee2e6; padding: 10px; text-align: center; }
+        th { background-color: #f8f9fa; color: #495057; }
+        
+        .logout-btn { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .logout-btn:hover { background: #c82333; }
+        
+        .alert-box { background: #fff3cd; color: #856404; padding: 15px; border-radius: 6px; border: 1px solid #ffeeba; text-align: center; font-size: 0.95rem; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div>
+            <h4 id="welcome-user">مرحباً بالطالب</h4>
+            <small id="student-id-display" style="opacity: 0.9;"></small>
+        </div>
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </header>
+
+    <div class="content-body">
+        <div class="card">
+            <h3>📖 المقررات الدراسية المنزلة (من سحاب الكلية)</h3>
+            <div id="courses-container" style="margin-top: 15px;">
+                <p style="text-align:center; color:#666;">جاري جلب البيانات من قاعدة البيانات السحابية...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>ℹ️ إعدادات الحساب وتغيير كلمة المرور</h3>
+            <label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:5px;">كلمة المرور الجديدة:</label>
+            <input type="password" id="newPassword" placeholder="أدخل كلمة المرور الجديدة..." style="width:100%; padding:10px; margin-bottom:12px; border:1px solid var(--border); border-radius:4px; outline:none;">
+            <button onclick="updatePassword()" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold;">حفظ كلمة المرور</button>
+        </div>
+    </div>
+
+    <!-- جلب بيانات الطالب من Firebase Firestore -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJFa0Am86uIOo1zWGRjf1wZnHrI_UUN50",
+            authDomain: "engineering-sms.firebaseapp.com",
+            projectId: "engineering-sms",
+            storageBucket: "engineering-sms.firebasestorage.app",
+            messagingSenderId: "1054730399462",
+            appId: "1:1054730399462:web:4fef9d4524bbaddd51d527",
+            measurementId: "G-8ZBFTXX7PR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // التحقق من الجلسة النشطة للطالب
+        const stId = sessionStorage.getItem('active_student_id');
+        if (!stId) {
+            alert('الرجاء تسجيل الدخول أولاً.');
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('welcome-user').innerText = "طالب كلية الهندسة";
+        document.getElementById('student-id-display').innerText = "رقم القيد: " + stId;
+
+        // دالة جلب المقررات فور فتح الصفحة من سحاب Firebase
+        async function fetchStudentData() {
+            const container = document.getElementById('courses-container');
+            try {
+                const docRef = doc(db, "students", stId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (!data.courses || data.courses.length === 0) {
+                        showNoCoursesMessage(container);
+                        return;
+                    }
+
+                    let html = `<p style="margin-bottom: 12px; font-size: 0.9rem;">الفصل الدراسي المعتمد: <strong style="color:var(--primary);">${data.assignedSemester || 'الفصل الحالي'}</strong></p>`;
+                    html += `<table><thead><tr><th>ر.م</th><th>اسم المقرر الدراسي</th><th>الحالة</th></tr></thead><tbody>`;
+                    
+                    data.courses.forEach((course, index) => {
+                        html += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${course}</td>
+                                <td><span style="color:var(--success); font-weight:bold;">منزلة رسميًا</span></td>
+                            </tr>
+                        `;
+                    });
+                    html += `</tbody></table>`;
+                    container.innerHTML = html;
+
+                } else {
+                    showNoCoursesMessage(container);
+                }
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+                container.innerHTML = `<p style="color:var(--danger); text-align:center;">حدث خطأ أثناء جلب البيانات من السحاب.</p>`;
+            }
+        }
+
+        function showNoCoursesMessage(container) {
+            container.innerHTML = `
+                <div class="alert-box">
+                    ⚠️ <strong>لم يتم تنزيل المقررات الدراسية بعد!</strong><br>
+                    لم يقم مسجل الكلية بتنفيذ تصفية المواد وتنزيلها لحسابك في السحاب حتى هذه اللحظة. يرجى مراجعة مسجل الكلية.
+                </div>
+            `;
+        }
+
+        window.updatePassword = async function() {
+            const newPass = document.getElementById('newPassword').value.trim();
+            if (!newPass) {
+                alert('الرجاء كتابة كلمة المرور الجديدة.');
+                return;
+            }
+            try {
+                const docRef = doc(db, "students", stId);
+                await updateDoc(docRef, { password: newPass });
+                alert('تم تحديث كلمة المرور بنجاح في السحاب!');
+                document.getElementById('newPassword').value = '';
+            } catch (error) {
+                alert('حدث خطأ أثناء تحديث كلمة المرور.');
+            }
+        }
+
+        window.logout = function() {
+            sessionStorage.removeItem('active_student_id');
+            window.location.href = 'index.html';
+        }
+
+        // تشغيل الجلب فور تحميل الصفحة
+        fetchStudentData();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة مسجل الكلية - إدارة المقررات</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --success: #28a745;
+            --bg-light: #f4f6f9;
+            --text-dark: #333;
+            --border: #ced4da;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); padding: 15px; }
+        .container { max-width: 600px; margin: 30px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: var(--primary); margin-bottom: 20px; text-align: center; font-size: 1.2rem; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; outline: none; }
+        .checkbox-group { background: #f8f9fa; padding: 12px; border-radius: 4px; margin-top: 5px; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; }
+        .checkbox-item input { width: auto; }
+        .btn { width: 100%; padding: 12px; background: var(--success); color: white; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .btn:hover { background: #218838; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>⚙️ لوحة مسجل الكلية (تنزيل وتصفية المواد)</h2>
+    <form id="adminForm">
+        <div class="form-group">
+            <label>رقم قيد الطالب:</label>
+            <input type="text" id="studentId" placeholder="مثال: 12345678" required>
+        </div>
+
+        <div class="form-group">
+            <label>الفصل الدراسي (السيمستير):</label>
+            <select id="semester">
+                <option value="الفصل الأول (ربيع 2026)">الفصل الأول (ربيع 2026)</option>
+                <option value="الفصل الثاني (خريف 2026)">الفصل الثاني (خريف 2026)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>المقررات المتاحة للتنزيل:</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="c1" value="GS101 - رياضة 1 (3 وحدات)">
+                    <label for="c1">GS101 - رياضة 1 (3 وحدات)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="c2" value="GS111 - طبيعة 1 (3 وحدات)">
+                    <label for="c2">GS111 - طبيعة 1 (3 وحدات)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="c3" value="GE122 - رسم هندسي (2 وحدات)">
+                    <label for="c3">GE122 - رسم هندسي (2 وحدات)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="c4" value="GH141 - لغة إنجليزية 1 (2 وحدات)">
+                    <label for="c4">GH141 - لغة إنجليزية 1 (2 وحدات)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="c5" value="GS102 - رياضة 2 (3 وحدات)">
+                    <label for="c5">GS102 - رياضة 2 (3 وحدات)</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn">اعتماد وحفظ المواد في السحاب</button>
+    </form>
+    <a href="index.html" class="back-link">← تسجيل الخروج والعودة للرئيسية</a>
+</div>
+
+<!-- ربط Firebase وحفظ البيانات بشكل صحيح -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBJFa0Am86uIOo1zWGRjf1wZnHrI_UUN50",
+        authDomain: "engineering-sms.firebaseapp.com",
+        projectId: "engineering-sms",
+        storageBucket: "engineering-sms.firebasestorage.app",
+        messagingSenderId: "1054730399462",
+        appId: "1:1054730399462:web:4fef9d4524bbaddd51d527",
+        measurementId: "G-8ZBFTXX7PR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // التحقق من دخول الأدمن
+    if (sessionStorage.getItem('active_admin') !== 'true') {
+        alert('غير مسموح بالدخول. يرجى تسجيل الدخول كأدمن أولاً.');
+        window.location.href = 'index.html';
+    }
+
+    document.getElementById('adminForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const stId = document.getElementById('studentId').value.trim();
+        const semester = document.getElementById('semester').value;
+
+        let selectedCourses = [];
+        ['c1', 'c2', 'c3', 'c4', 'c5'].forEach(id => {
+            const cb = document.getElementById(id);
+            if (cb.checked) selectedCourses.push(cb.value);
+        });
+
+        if (selectedCourses.length === 0) {
+            alert('الرجاء اختيار مادة واحدة على الأقل لتنزيلها للطالب.');
+            return;
+        }
+
+        try {
+            // حفظ البيانات في جدول (students) تحت وثيقة برقم قيد الطالب
+            await setDoc(doc(db, "students", stId), {
+                assignedSemester: semester,
+                courses: selectedCourses,
+                password: stId
+            }, { merge: true });
+
+            alert(`تم بنجاح تنزيل وحفظ المقررات للطالب برقم القيد (${stId}) في السحاب!`);
+            document.getElementById('studentId').value = '';
+            ['c1', 'c2', 'c3', 'c4', 'c5'].forEach(id => document.getElementById(id).checked = false);
+        } catch (error) {
+            console.error("Error saving courses: ", error);
+            alert("حدث خطأ أثناء الحفظ في قاعدة البيانات: " + error.message);
+        }
+    });
+</script>
+
+</body>
+</html>
+

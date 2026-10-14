@@ -6,391 +6,110 @@
     <title>منظومة التسجيل والدراسة - كلية الهندسة</title>
     <style>
         :root {
-            --primary-blue: #007bff;
-            --header-blue: #0081ff;
-            --bg-light: #f4f6f9;
-            --text-dark: #333;
-            --border-color: #ced4da;
+            --primary: #007bff;
+            --bg-dark: #1e293b;
+            --border: #ced4da;
         }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-        }
-        
-        /* شاشة تسجيل الدخول الخاص بـ كلية الهندسة */
-        #login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), #1e293b;
-        }
-        .login-box {
-            background: white;
-            width: 100%;
-            max-width: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        .login-header {
-            background-color: #007bff;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-        .login-body {
-            padding: 25px;
-        }
-        .input-group {
-            display: flex;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            background: #fff;
-        }
-        .input-group input, .input-group select {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            outline: none;
-            font-size: 0.95rem;
-            background: transparent;
-        }
-        .input-icon {
-            background: #e9ecef;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #495057;
-            border-right: 1px solid var(--border-color);
-        }
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-        .login-btn:hover { background-color: #0056b3; }
-
-        /* لوحة المنظومة الرئيسية */
-        .app-header {
-            background-color: var(--header-blue);
-            color: white;
-            padding: 12px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .menu-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        .app-title {
-            font-size: 0.95rem;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        /* القائمة الجانبية */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -280px;
-            width: 280px;
-            height: 100%;
-            background: white;
-            box-shadow: -4px 0 15px rgba(0,0,0,0.1);
-            transition: right 0.3s ease;
-            z-index: 1000;
-            overflow-y: auto;
-        }
-        .sidebar.open { right: 0; }
-        .sidebar-header {
-            background: var(--header-blue);
-            color: white;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .sidebar-menu {
-            list-style: none;
-            padding: 10px 0;
-        }
-        .sidebar-menu li a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text-dark);
-            text-decoration: none;
-            border-bottom: 1px solid #f1f1f1;
-            font-size: 0.95rem;
-            transition: background 0.2s;
-        }
-        .sidebar-menu li a:hover {
-            background-color: #f8f9fa;
-            color: var(--primary-blue);
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            z-index: 999;
-        }
-        .overlay.active { display: block; }
-
-        .content-body {
-            padding: 15px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            background: white;
-            font-size: 0.9rem;
-        }
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #f8f9fa;
-            color: #495057;
-        }
-        .hidden { display: none !important; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: var(--bg-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+        .login-card { background: white; width: 100%; max-width: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .login-header { background: var(--primary); color: white; padding: 20px; text-align: center; font-size: 1.1rem; font-weight: bold; }
+        .login-body { padding: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem; color: #475569; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; outline: none; }
+        .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: #0056b3; }
     </style>
 </head>
 <body>
 
-    <!-- شاشة الدخول المباشرة لكلية الهندسة -->
-    <div id="login-container">
-        <div class="login-box">
-            <div class="login-header">
-                🏛️ منظومة التسجيل والدراسة<br>
-                <span style="font-size: 0.9rem; font-weight: normal;">كلية الهندسة</span>
-            </div>
-            <div class="login-body">
-                <form onsubmit="handleLogin(event)">
-                    <div class="input-group">
-                        <input type="text" id="username" placeholder="رقم القيد الدراسي" required>
-                        <span class="input-icon">✏️</span>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="password" placeholder="كلمة المرور" required>
-                        <span class="input-icon">🔒</span>
-                    </div>
-                    <div class="input-group">
-                        <select id="study-system" required>
-                            <option value="النظم الفصلي">النظام الفصلي</option>
-                            <option value="النظم السنوي">النظام السنوي</option>
-                        </select>
-                        <span class="input-icon">🏠</span>
-                    </div>
-                    
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 4px; font-size: 0.8rem; color: #6c757d; margin-bottom: 15px;">
-                        💡 كلمة المرور الافتراضية هي نفسها رقم القيد الخاص بك.
-                    </div>
-
-                    <button type="submit" class="login-btn">دخول المنظومة</button>
-                </form>
-            </div>
-        </div>
+<div class="login-card">
+    <div class="login-header">
+        🏛️ منظومة التسجيل والدراسة<br>
+        <span style="font-size:0.85rem; font-weight:normal;">كلية الهندسة</span>
     </div>
-
-    <!-- لوحة الطالب في كلية الهندسة -->
-    <div id="main-app" class="hidden">
-        <header class="app-header">
-            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-            <div class="app-title">منظومة التسجيل والدراسة - كلية الهندسة</div>
-            <div style="width: 24px;"></div>
-        </header>
-
-        <!-- القائمة الجانبية -->
-        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <span style="font-size: 1.5rem;">🎓</span>
-                <div>
-                    <h4 id="user-display-name">طالب الهندسة</h4>
-                    <small id="user-display-id" style="opacity: 0.8;">رقم القيد</small>
-                </div>
+    <div class="login-body">
+        <form id="loginForm">
+            <div class="form-group">
+                <label>نوع الحساب:</label>
+                <select id="userRole">
+                    <option value="student">طالب (برقم القيد)</option>
+                    <option value="admin">مسجل الكلية / أدمن</option>
+                </select>
             </div>
-            <ul class="sidebar-menu">
-                <li><a href="#" onclick="showSection('home-section')">🏠 الرئيسية</a></li>
-                <li><a href="#" onclick="showSection('profile-section')">ℹ️ الملف الشخصي وتغيير كلمة المرور</a></li>
-                <li><a href="#" onclick="showSection('study-record')">📖 السجل الدراسي والنتائج</a></li>
-                <li><a href="#" onclick="showSection('schedule-section')">📅 الجداول الدراسية</a></li>
-                <li><a href="#" onclick="showSection('courses-section')">📚 المناهج والمقررات</a></li>
-                <li><a href="#" onclick="logout()" style="color: #dc3545;">🚪 تسجيل الخروج</a></li>
-            </ul>
-        </nav>
-
-        <!-- المحتوى الداخلي -->
-        <div class="content-body">
-            
-            <div id="home-section" class="card">
-                <h3>مرحباً بك في منظومة كلية الهندسة</h3>
-                <p style="margin-top: 10px; color: #666;">يمكنك استعراض السجل الدراسي، كشوفات درجات المقررات الهندسية، والجداول الدراسية من القائمة الجانبية.</p>
+            <div class="form-group">
+                <label>اسم المستخدم / رقم القيد:</label>
+                <input type="text" id="username" placeholder="أدخل رقم القيد أو اسم المستخدم" required>
             </div>
-
-            <!-- إعدادات الحساب وتغيير كلمة المرور -->
-            <div id="profile-section" class="card hidden">
-                <h3>تغيير كلمة المرور</h3>
-                <p style="margin: 10px 0; font-size: 0.9rem; color: #666;">أدخل كلمة المرور الجديدة لترتبط برقم قيدك:</p>
-                <label>كلمة المرور الجديدة:</label>
-                <input type="password" id="new-password" placeholder="أدخل كلمة المرور الجديدة..." style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ced4da; border-radius:4px;">
-                <button class="login-btn" onclick="updatePassword()">تحديث كلمة المرور</button>
+            <div class="form-group">
+                <label>كلمة المرور:</label>
+                <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
             </div>
-
-            <!-- السجل الدراسي -->
-            <div id="study-record" class="card hidden">
-                <h3>السجل الدراسي للمقررات الهندسية</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ر.م</th>
-                            <th>الفصل</th>
-                            <th>السنة</th>
-                            <th>حالة القيد</th>
-                            <th>كشف الدرجات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>خريف</td>
-                            <td>2025</td>
-                            <td>جدد قيد</td>
-                            <td><a href="#" onclick="alert('نتائج خريف 2025 معتمدة');" style="color: var(--primary-blue);">عرض النتائج</a></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>ربيع</td>
-                            <td>2026</td>
-                            <td>جدد قيد</td>
-                            <td><a href="#" onclick="showEngineeringGrades()" style="color: var(--primary-blue); font-weight: bold;">عرض النتائج</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div id="schedule-section" class="card hidden">
-                <h3>الجداول الدراسية لكلية الهندسة</h3>
-                <p style="margin-top: 10px; color: #666;">جدول المحاضرات والامتحانات النصفية والنهائية الخاصة بقسمك الهندسي.</p>
-            </div>
-
-            <div id="courses-section" class="card hidden">
-                <h3>المناهج الخطة الدراسية</h3>
-                <p style="margin-top: 10px; color: #666;">المقررات المنجزة والمتبقية في قسم الهندسة.</p>
-            </div>
-
-        </div>
+            <button type="submit" class="btn">تسجيل الدخول</button>
+        </form>
     </div>
+</div>
 
-<script>
-    function handleLogin(event) {
-        event.preventDefault();
-        const enteredId = document.getElementById('username').value.trim();
-        const enteredPass = document.getElementById('password').value.trim();
+<!-- ربط مكتبات Firebase ومفاتيحك الخاصة -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // جلب كلمة المرور المخزنة سابقاً أو استخدام رقم القيد افتراضياً
-        let savedPass = localStorage.getItem('pass_' + enteredId) || enteredId;
+    const firebaseConfig = {
+        apiKey: "AIzaSyBJFa0Am86uIOo1zWGRjf1wZnHrI_UUN50",
+        authDomain: "engineering-sms.firebaseapp.com",
+        projectId: "engineering-sms",
+        storageBucket: "engineering-sms.firebasestorage.app",
+        messagingSenderId: "1054730399462",
+        appId: "1:1054730399462:web:4fef9d4524bbaddd51d527",
+        measurementId: "G-8ZBFTXX7PR"
+    };
 
-        if (enteredPass === savedPass) {
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            
-            document.getElementById('user-display-name').innerText = "طالب - " + enteredId;
-            document.getElementById('user-display-id').innerText = "رقم القيد: " + enteredId;
-            
-            // حفظ رقم القيد الحالي للجلسة
-            sessionStorage.setItem('current_student', enteredId);
-        } else {
-            alert('كلمة المرور غير صحيحة! (ملاحظة: افتراضياً كلمة المرور هي نفس رقم القيد).');
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const role = document.getElementById('userRole').value;
+        const userKey = document.getElementById('username').value.trim();
+        const passKey = document.getElementById('password').value.trim();
+
+        try {
+            if (role === 'student') {
+                // التحقق من قاعدة البيانات في جدول الطلاب
+                const studentDoc = await getDoc(doc(db, "students", userKey));
+                
+                if (studentDoc.exists()) {
+                    const stData = studentDoc.data();
+                    if (stData.password === passKey) {
+                        sessionStorage.setItem('active_student_id', userKey);
+                        window.location.href = 'student.html';
+                    } else {
+                        alert('كلمة المرور غير صحيحة!');
+                    }
+                } else {
+                    // دخول افتراضي أولي إذا لم يسجل كلمة مرور خاصة به بعد (افتراضياً كلمة السر هي رقم القيد)
+                    if (passKey === userKey) {
+                        sessionStorage.setItem('active_student_id', userKey);
+                        window.location.href = 'student.html';
+                    } else {
+                        alert('رقم القيد غير مسجل أو كلمة المرور خطأ.');
+                    }
+                }
+            } else if (role === 'admin') {
+                if (userKey === 'admin' && passKey === 'admin123') {
+                    sessionStorage.setItem('active_admin', 'true');
+                    window.location.href = 'admin.html';
+                } else {
+                    alert('بيانات الأدمن غير صحيحة! (اسم المستخدم: admin | كلمة المرور: admin123)');
+                }
+            }
+        } catch (error) {
+            console.error("Error during login: ", error);
+            alert("حدث خطأ في الاتصال بقاعدة البيانات السحابية!");
         }
-    }
-
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('overlay').classList.toggle('active');
-    }
-
-    function showSection(sectionId) {
-        document.getElementById('home-section').classList.add('hidden');
-        document.getElementById('profile-section').classList.add('hidden');
-        document.getElementById('study-record').classList.add('hidden');
-        document.getElementById('schedule-section').classList.add('hidden');
-        document.getElementById('courses-section').classList.add('hidden');
-
-        document.getElementById(sectionId).classList.remove('hidden');
-        toggleSidebar();
-    }
-
-    function updatePassword() {
-        const currentStudent = sessionStorage.getItem('current_student');
-        const newPass = document.getElementById('new-password').value.trim();
-        
-        if(!newPass) {
-            alert('الرجاء إدخال كلمة المرور الجديدة.');
-            return;
-        }
-
-        localStorage.setItem('pass_' + currentStudent, newPass);
-        alert('تم تحديث كلمة المرور بنجاح! استخدم كلمة المرور الجديدة عند الدخول المرة القادمة.');
-        document.getElementById('new-password').value = '';
-    }
-
-    function showEngineeringGrades() {
-        alert('تقرير المقررات الهندسية (ربيع 2026):\n- رياضة 2 (GS102): ممتاز\n- طبيعة 2 (GS112): ممتاز\n- رسم هندسي (GE122): ممتاز\n\nالمعدل العام التراكمي: 82.23%');
-    }
-
-    function logout() {
-        document.getElementById('main-app').classList.add('hidden');
-        document.getElementById('login-container').classList.remove('hidden');
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
-        sessionStorage.removeItem('current_student');
-        toggleSidebar();
-    }
+    });
 </script>
 
 </body>
